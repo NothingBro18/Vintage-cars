@@ -1,0 +1,37 @@
+{
+  "name": "vintage-car-gallery",
+  "private": true,
+  "version": "0.0.0",
+  "homepage": "https://naveenrajk17-dev.github.io/vintage-car-gallery",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "framer-motion": "^10.18.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intersection-observer": "^9.16.0",
+    "react-router-dom": "^6.30.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "gh-pages": "^6.3.0",
+    "globals": "^17.4.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
+    "vite": "^5.4.21"
+  }
+}
