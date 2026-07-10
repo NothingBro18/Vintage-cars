@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
 const AccountPage = () => {
-  const { login, signup, currentUser } = useAuth();
+  const { login, signup, currentUser, guestLogin } = useAuth();
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -97,9 +97,20 @@ const AccountPage = () => {
         </p>
         
         {isLogin && (
-          <p className="text-center mt-4 text-xs text-gray-500">
-            Demo: demo@vintage.com / demo123
-          </p>
+          <>
+            <p className="text-center mt-4 text-xs text-gray-500">
+              Demo: demo@vintage.com / demo123
+            </p>
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => { guestLogin(); navigate('/'); }}
+                className="w-full bg-amber-600 hover:bg-amber-700 py-3 rounded-xl font-bold transition"
+              >
+                Continue as Guest
+              </button>
+            </div>
+          </>
         )}
       </motion.div>
     </div>

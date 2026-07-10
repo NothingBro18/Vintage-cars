@@ -1,14 +1,17 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ThreeDBackground from './components/ThreeDBackground';
 import HomePage from './pages/HomePage';
 import AccountPage from './pages/AccountPage';
+import ProfilePage from './pages/ProfilePage';
 import ReviewsPage from './pages/ReviewsPage';
 import AboutPage from './pages/AboutPage';
 import UploadPage from './pages/UploadPage';
+import FavoritesPage from './pages/FavoritesPage';
+import EditCarPage from './pages/EditCarPage';
 import CarDetail from './components/CarDetail';
 
 const AppContent = () => {
@@ -19,7 +22,10 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/car/:id" element={<CarDetail />} />
+        <Route path="/edit/:id" element={<EditCarPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/upload" element={<UploadPage />} />

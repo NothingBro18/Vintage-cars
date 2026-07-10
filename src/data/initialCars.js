@@ -10,7 +10,7 @@ export const initialCars = [
     topSpeed: "130 mph",
     details: "Iconic American muscle car known as 'Eleanor'. Raw power and aggressive styling.",
     image: "/vintage-car-gallery/01-mustang-mach1.jpg",
-    price: "$250,000+",
+    price: "₹2,05,00,000+",
     address: "Los Angeles, USA"
   },
   {
@@ -24,7 +24,7 @@ export const initialCars = [
     topSpeed: "125 mph",
     details: "Classic American muscle with aggressive design and performance.",
     image: "/vintage-car-gallery/02-chevelle-ss.jpg",
-    price: "$180,000",
+    price: "₹1,47,60,000",
     address: "Detroit, USA"
   },
   {
@@ -38,7 +38,7 @@ export const initialCars = [
     topSpeed: "140 mph",
     details: "Famous for bold styling and powerful road presence.",
     image: "/vintage-car-gallery/03-dodge-charger.jpg",
-    price: "$220,000",
+    price: "₹1,80,40,000",
     address: "USA"
   },
   {
@@ -52,7 +52,7 @@ export const initialCars = [
     topSpeed: "120 mph",
     details: "Luxury and performance combined in a classic design.",
     image: "/vintage-car-gallery/04-chevy-impala.jpg",
-    price: "$90,000",
+    price: "₹73,80,000",
     address: "USA"
   },
   {
@@ -66,7 +66,7 @@ export const initialCars = [
     topSpeed: "135 mph",
     details: "Raw muscle with minimal luxury but maximum power.",
     image: "/vintage-car-gallery/05-plymouth-roadrunner.jpg",
-    price: "$150,000",
+    price: "₹1,23,00,000",
     address: "USA"
   },
   {
@@ -80,7 +80,7 @@ export const initialCars = [
     topSpeed: "125 mph",
     details: "Built for racing dominance with iconic Mustang design.",
     image: "/vintage-car-gallery/06-mustang-boss302.jpg",
-    price: "$200,000",
+    price: "₹1,64,00,000",
     address: "USA"
   }
 ];

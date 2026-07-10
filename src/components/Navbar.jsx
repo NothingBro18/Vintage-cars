@@ -20,13 +20,16 @@ const Navbar = () => {
       
       <div className="flex gap-4 flex-wrap items-center text-sm md:text-base">
         <Link to="/" className="hover:text-amber-400 transition px-2">HOME</Link>
+        <Link to="/favorites" className="hover:text-amber-400 transition px-2">FAVORITES</Link>
         <Link to="/reviews" className="hover:text-amber-400 transition px-2">REVIEWS</Link>
         <Link to="/about" className="hover:text-amber-400 transition px-2">ABOUT</Link>
         <Link to="/upload" className="hover:text-amber-400 transition px-2">UPLOAD</Link>
         
         {currentUser ? (
           <div className="flex items-center gap-3">
-            <span className="text-amber-300 text-sm">👤 {currentUser.username}</span>
+            <Link to="/profile" className="text-amber-300 text-sm hover:text-white transition">
+              👤 {currentUser.username}
+            </Link>
             <button 
               onClick={() => { logout(); navigate("/"); }} 
               className="bg-amber-700 px-3 py-1 rounded-full text-sm hover:bg-amber-800 transition"

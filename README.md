@@ -2,6 +2,8 @@
 
 A modern **React + Vite** web application that showcases timeless classic cars with stunning UI, detailed specifications, and community interaction.
 
+[![Playwright E2E](https://github.com/naveenrajk17-dev/vintage-car-gallery/actions/workflows/playwright.yml/badge.svg)](https://github.com/naveenrajk17-dev/vintage-car-gallery/actions/workflows/playwright.yml)
+
 ## Tech Stack
 - React.js
 - Vite
