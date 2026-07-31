@@ -1,3 +1,5 @@
+const assetUrl = (filename) => `${import.meta.env.BASE_URL}${filename}`;
+
 export const initialCars = [
   {
     id: 1,
@@ -9,7 +11,7 @@ export const initialCars = [
     year: 1967,
     topSpeed: "130 mph",
     details: "Iconic American muscle car known as 'Eleanor'. Raw power and aggressive styling.",
-    image: "/vintage-car-gallery/01-mustang-mach1.jpg",
+    image: assetUrl('01-mustang-mach1.jpg'),
     price: "₹2,05,00,000+",
     address: "Los Angeles, USA"
   },
@@ -23,7 +25,7 @@ export const initialCars = [
     year: 1969,
     topSpeed: "125 mph",
     details: "Classic American muscle with aggressive design and performance.",
-    image: "/vintage-car-gallery/02-chevelle-ss.jpg",
+    image: assetUrl('02-chevelle-ss.jpg'),
     price: "₹1,47,60,000",
     address: "Detroit, USA"
   },
@@ -37,7 +39,7 @@ export const initialCars = [
     year: 1970,
     topSpeed: "140 mph",
     details: "Famous for bold styling and powerful road presence.",
-    image: "/vintage-car-gallery/03-dodge-charger.jpg",
+    image: assetUrl('03-dodge-charger.jpg'),
     price: "₹1,80,40,000",
     address: "USA"
   },
@@ -51,7 +53,7 @@ export const initialCars = [
     year: 1964,
     topSpeed: "120 mph",
     details: "Luxury and performance combined in a classic design.",
-    image: "/vintage-car-gallery/04-chevy-impala.jpg",
+    image: assetUrl('04-chevy-impala.jpg'),
     price: "₹73,80,000",
     address: "USA"
   },
@@ -65,7 +67,7 @@ export const initialCars = [
     year: 1970,
     topSpeed: "135 mph",
     details: "Raw muscle with minimal luxury but maximum power.",
-    image: "/vintage-car-gallery/05-plymouth-roadrunner.jpg",
+    image: assetUrl('05-plymouth-roadrunner.jpg'),
     price: "₹1,23,00,000",
     address: "USA"
   },
@@ -79,7 +81,7 @@ export const initialCars = [
     year: 1969,
     topSpeed: "125 mph",
     details: "Built for racing dominance with iconic Mustang design.",
-    image: "/vintage-car-gallery/06-mustang-boss302.jpg",
+    image: assetUrl('06-mustang-boss302.jpg'),
     price: "₹1,64,00,000",
     address: "USA"
   }
