@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import CarCard from '../components/CarCard';
 import SearchBar from '../components/SearchBar';
@@ -18,6 +18,8 @@ const HomePage = () => {
     maxPrice: '',
     location: '',
   });
+  const [soundOn, setSoundOn] = useState(false);
+  const audioRef = useRef(null);
 
   const handleCarClick = (carId) => {
     navigate(`/car/${carId}`);
@@ -34,6 +36,49 @@ const HomePage = () => {
 
   const resetFilters = () => {
     setFilters({ year: '', horsepower: '', minPrice: '', maxPrice: '', location: '' });
+  };
+
+  useEffect(() => () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.oscillator.stop();
+      audio.context.close();
+      audioRef.current = null;
+    }
+  }, []);
+
+  const toggleEngineSound = () => {
+    if (soundOn) {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.oscillator.stop();
+        audio.context.close();
+        audioRef.current = null;
+      }
+      setSoundOn(false);
+      return;
+    }
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const context = new AudioContext();
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    const wobble = context.createOscillator();
+    const wobbleGain = context.createGain();
+    oscillator.type = 'sawtooth';
+    oscillator.frequency.value = 58;
+    wobble.type = 'sine';
+    wobble.frequency.value = 5.5;
+    wobbleGain.gain.value = 9;
+    wobble.connect(wobbleGain).connect(oscillator.frequency);
+    oscillator.connect(gain).connect(context.destination);
+    gain.gain.setValueAtTime(0.0001, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.045, context.currentTime + 0.25);
+    oscillator.start();
+    wobble.start();
+    audioRef.current = { context, oscillator, wobble, gain };
+    setSoundOn(true);
   };
 
   const filteredCars = useMemo(() => {
@@ -98,7 +143,29 @@ const HomePage = () => {
         <motion.div variants={heroItem} className="hero-scroll-cue" aria-hidden="true">
           <span /> SCROLL TO EXPLORE
         </motion.div>
+        <motion.button
+          variants={heroItem}
+          type="button"
+          onClick={toggleEngineSound}
+          className={`engine-toggle ${soundOn ? 'engine-toggle-on' : ''}`}
+          aria-pressed={soundOn}
+        >
+          <span className="engine-led" /> {soundOn ? 'MUTE ENGINE' : 'START ENGINE'}
+        </motion.button>
       </motion.div>
+      <div className="road-scene" aria-hidden="true">
+        <div className="road-horizon" />
+        <motion.div
+          className="driving-car"
+          animate={{ x: ['-32vw', '132vw'] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
+        >
+          <span className="exhaust exhaust-one" />
+          <span className="exhaust exhaust-two" />
+          <img src={cars[0]?.image} alt="" />
+        </motion.div>
+        <div className="road-lines" />
+      </div>
       <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mb-8">
         <SearchBar search={search} onSearchChange={handleSearchChange} />
       </motion.div>
