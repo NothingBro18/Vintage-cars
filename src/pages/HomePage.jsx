@@ -119,6 +119,7 @@ const HomePage = () => {
       nodes.push(node);
     });
     audioRef.current = {
+      context,
       stop: () => {
         nodes.forEach((node) => {
           try { node.stop(); } catch { /* already stopped */ }
@@ -128,6 +129,38 @@ const HomePage = () => {
     };
     setSoundOn(true);
   };
+
+  useEffect(() => {
+    // Browsers may suspend audio until the visitor interacts with the page.
+    // Start immediately where autoplay is allowed, then unlock on the first
+    // pointer/keyboard gesture everywhere else.
+    toggleEngineSound();
+    const unlockAudio = () => {
+      audioRef.current?.context.resume();
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+    };
+    window.addEventListener('pointerdown', unlockAudio, { once: true });
+    window.addEventListener('keydown', unlockAudio, { once: true });
+    const soundTimer = window.setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.stop();
+        audioRef.current = null;
+        setSoundOn(false);
+      }
+    }, 8200);
+    return () => {
+      window.clearTimeout(soundTimer);
+      window.removeEventListener('pointerdown', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      if (audioRef.current) {
+        audioRef.current.stop();
+        audioRef.current = null;
+      }
+    };
+    // The sound should be initialized once when this page enters.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredCars = useMemo(() => {
     return cars.filter((car) => {
@@ -191,22 +224,13 @@ const HomePage = () => {
         <motion.div variants={heroItem} className="hero-scroll-cue" aria-hidden="true">
           <span /> SCROLL TO EXPLORE
         </motion.div>
-        <motion.button
-          variants={heroItem}
-          type="button"
-          onClick={toggleEngineSound}
-          className={`engine-toggle ${soundOn ? 'engine-toggle-on' : ''}`}
-          aria-pressed={soundOn}
-        >
-          <span className="engine-led" /> {soundOn ? 'MUTE SHELBY V8' : 'START SHELBY V8'}
-        </motion.button>
       </motion.div>
       <div className="road-scene" aria-hidden="true">
         <div className="road-horizon" />
         <motion.div
           className="driving-car"
           animate={{ x: ['-32vw', '132vw'] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
+          transition={{ duration: 8, ease: 'linear' }}
         >
           <span className="exhaust exhaust-one" />
           <span className="exhaust exhaust-two" />
