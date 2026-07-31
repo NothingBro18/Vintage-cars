@@ -41,7 +41,7 @@ const UploadPage = () => {
         details: generateDetails(prev.name, prev.model)
       }));
     }
-  }, [formData.name, formData.model]);
+  }, [formData.details, formData.name, formData.model]);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);

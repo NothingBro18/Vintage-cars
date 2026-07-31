@@ -34,9 +34,13 @@ const AppContent = () => {
 };
 
 function App() {
+  const basename = import.meta.env.BASE_URL === '/'
+    ? undefined
+    : import.meta.env.BASE_URL.replace(/\/$/, '');
+
   return (
     <BrowserRouter
-      basename="/vintage-car-gallery"
+      basename={basename}
       future={{
         v7_startTransition: true,
         v7_relativeSplatPath: true,

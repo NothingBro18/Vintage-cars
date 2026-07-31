@@ -6,7 +6,7 @@ export const generateDetails = (name, model) => {
 
 export const parsePriceNumber = (priceString) => {
   if (!priceString) return 0;
-  const cleaned = priceString.replace(/[₹,\s+\+]/g, '').replace(/[^0-9.]/g, '');
+  const cleaned = priceString.replace(/[₹,\s+]/g, '').replace(/[^0-9.]/g, '');
   return Number(cleaned) || 0;
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { generateDetails, generateSpecs } from '../utils/carHelpers';
+import { generateDetails } from '../utils/carHelpers';
 import Modal from './Modal';
 import Toast from './Toast';
 import FavoriteButton from './FavoriteButton';
@@ -16,7 +16,6 @@ const CarDetail = () => {
   const currentIndex = cars.findIndex((c) => c.id === parseInt(id, 10));
   const nextCar = currentIndex >= 0 && cars.length > 0 ? cars[(currentIndex + 1) % cars.length] : null;
 
-  const specs = car ? generateSpecs(car) : {};
   const details = car ? (car.details || generateDetails(car.name, car.model)) : '';
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [toast, setToast] = useState('');

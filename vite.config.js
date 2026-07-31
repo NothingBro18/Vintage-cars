@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: "/vintage-car-gallery/",
+  // Netlify serves the app from the domain root. GitHub Pages uses the
+  // repository subpath via the dedicated build script in package.json.
+  base: '/',
   server: {
     port: 3000,
     open: true,
