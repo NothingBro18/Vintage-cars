@@ -41,8 +41,7 @@ const HomePage = () => {
   useEffect(() => () => {
     const audio = audioRef.current;
     if (audio) {
-      audio.oscillator.stop();
-      audio.context.close();
+      audio.stop();
       audioRef.current = null;
     }
   }, []);
@@ -51,8 +50,7 @@ const HomePage = () => {
     if (soundOn) {
       const audio = audioRef.current;
       if (audio) {
-        audio.oscillator.stop();
-        audio.context.close();
+        audio.stop();
         audioRef.current = null;
       }
       setSoundOn(false);
@@ -62,22 +60,72 @@ const HomePage = () => {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
     const context = new AudioContext();
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    const wobble = context.createOscillator();
-    const wobbleGain = context.createGain();
-    oscillator.type = 'sawtooth';
-    oscillator.frequency.value = 58;
-    wobble.type = 'sine';
-    wobble.frequency.value = 5.5;
-    wobbleGain.gain.value = 9;
-    wobble.connect(wobbleGain).connect(oscillator.frequency);
-    oscillator.connect(gain).connect(context.destination);
-    gain.gain.setValueAtTime(0.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.045, context.currentTime + 0.25);
-    oscillator.start();
-    wobble.start();
-    audioRef.current = { context, oscillator, wobble, gain };
+    const master = context.createGain();
+    const filter = context.createBiquadFilter();
+    const nodes = [];
+    filter.type = 'lowpass';
+    filter.frequency.value = 1250;
+    filter.Q.value = 1.4;
+    master.gain.setValueAtTime(0.0001, context.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.065, context.currentTime + 0.35);
+    filter.connect(master).connect(context.destination);
+
+    // Layered, procedural V8 rumble: a low crankshaft fundamental, harmonics,
+    // and a modulated pulse layer approximating a classic big-block idle.
+    const rumble = context.createOscillator();
+    const harmonic = context.createOscillator();
+    const pulse = context.createOscillator();
+    const rumbleGain = context.createGain();
+    const harmonicGain = context.createGain();
+    const pulseGain = context.createGain();
+    rumble.type = 'sawtooth';
+    rumble.frequency.value = 43;
+    harmonic.type = 'triangle';
+    harmonic.frequency.value = 86;
+    pulse.type = 'square';
+    pulse.frequency.value = 21.5;
+    rumbleGain.gain.value = 0.55;
+    harmonicGain.gain.value = 0.12;
+    pulseGain.gain.value = 0.07;
+    rumble.connect(rumbleGain).connect(filter);
+    harmonic.connect(harmonicGain).connect(filter);
+    pulse.connect(pulseGain).connect(filter);
+
+    const rev = context.createOscillator();
+    const revGain = context.createGain();
+    rev.type = 'sine';
+    rev.frequency.value = 4.2;
+    revGain.gain.value = 7;
+    rev.connect(revGain).connect(rumble.frequency);
+
+    const exhaustBuffer = context.createBuffer(1, context.sampleRate * 1.5, context.sampleRate);
+    const exhaustData = exhaustBuffer.getChannelData(0);
+    for (let index = 0; index < exhaustData.length; index += 1) {
+      exhaustData[index] = (Math.random() * 2 - 1) * Math.pow(1 - (index % 3300) / 3300, 2);
+    }
+    const exhaust = context.createBufferSource();
+    const exhaustFilter = context.createBiquadFilter();
+    const exhaustGain = context.createGain();
+    exhaust.buffer = exhaustBuffer;
+    exhaust.loop = true;
+    exhaustFilter.type = 'bandpass';
+    exhaustFilter.frequency.value = 180;
+    exhaustFilter.Q.value = 0.7;
+    exhaustGain.gain.value = 0.09;
+    exhaust.connect(exhaustFilter).connect(exhaustGain).connect(filter);
+
+    [rumble, harmonic, pulse, rev, exhaust].forEach((node) => {
+      node.start();
+      nodes.push(node);
+    });
+    audioRef.current = {
+      stop: () => {
+        nodes.forEach((node) => {
+          try { node.stop(); } catch { /* already stopped */ }
+        });
+        context.close();
+      },
+    };
     setSoundOn(true);
   };
 
@@ -150,7 +198,7 @@ const HomePage = () => {
           className={`engine-toggle ${soundOn ? 'engine-toggle-on' : ''}`}
           aria-pressed={soundOn}
         >
-          <span className="engine-led" /> {soundOn ? 'MUTE ENGINE' : 'START ENGINE'}
+          <span className="engine-led" /> {soundOn ? 'MUTE SHELBY V8' : 'START SHELBY V8'}
         </motion.button>
       </motion.div>
       <div className="road-scene" aria-hidden="true">
