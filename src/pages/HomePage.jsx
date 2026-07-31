@@ -64,23 +64,44 @@ const HomePage = () => {
     });
   }, [cars, filters, search]);
 
+  const heroVariants = {
+    hidden: { opacity: 0, y: 28 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.12 },
+    },
+  };
+
+  const heroItem = {
+    hidden: { opacity: 0, y: 18 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.65 } },
+  };
+
   return (
     <div className="container mx-auto px-4 py-12 relative z-10">
       <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        className="text-center mb-16"
+        variants={heroVariants}
+        initial="hidden"
+        animate="visible"
+        className="hero-stage text-center mb-16"
       >
-        <h1 className="font-display text-5xl md:text-7xl font-bold tracking-wider">
+        <motion.div variants={heroItem} className="hero-kicker">EST. 1967 · THE GOLDEN ERA</motion.div>
+        <motion.div className="hero-orbit orbit-one" animate={{ rotate: 360 }} transition={{ duration: 24, repeat: Infinity, ease: 'linear' }} />
+        <motion.div className="hero-orbit orbit-two" animate={{ rotate: -360 }} transition={{ duration: 16, repeat: Infinity, ease: 'linear' }} />
+        <motion.h1 variants={heroItem} className="font-display text-5xl md:text-7xl font-bold tracking-wider">
           <span className="text-amber-500 vintage-glow">TIMELESS</span> LEGENDS
-        </h1>
-        <p className="text-gray-400 mt-4 max-w-2xl mx-auto">
+        </motion.h1>
+        <motion.p variants={heroItem} className="text-gray-400 mt-4 max-w-2xl mx-auto">
           Click any classic icon to unveil its full story, specs, and soul.
-        </p>
+        </motion.p>
+        <motion.div variants={heroItem} className="hero-scroll-cue" aria-hidden="true">
+          <span /> SCROLL TO EXPLORE
+        </motion.div>
       </motion.div>
-      <div className="mb-8">
+      <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mb-8">
         <SearchBar search={search} onSearchChange={handleSearchChange} />
-      </div>
+      </motion.div>
 
       <div className="grid gap-8 lg:grid-cols-4">
         <aside className="lg:col-span-1 lg:sticky lg:top-24">
@@ -88,9 +109,9 @@ const HomePage = () => {
         </aside>
 
         <main className="lg:col-span-3">
-          <div className="mb-6 rounded-3xl border border-gray-800 bg-slate-950/50 p-6 text-gray-300 shadow-lg">
+          <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.8 }} className="mb-6 rounded-3xl border border-gray-800 bg-slate-950/50 p-6 text-gray-300 shadow-lg">
             Showing <span className="font-semibold text-white">{filteredCars.length}</span> of <span className="font-semibold text-white">{cars.length}</span> cars
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             {filteredCars.map((car, idx) => (
               <CarCard 

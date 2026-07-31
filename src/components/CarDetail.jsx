@@ -20,6 +20,16 @@ const CarDetail = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [toast, setToast] = useState('');
 
+  const detailVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
+  };
+
+  const specVariants = {
+    hidden: { opacity: 0, x: 18 },
+    visible: (index) => ({ opacity: 1, x: 0, transition: { delay: 0.25 + index * 0.06, duration: 0.45 } }),
+  };
+
   const handleDelete = () => {
     setShowDeleteModal(true);
   };
@@ -81,47 +91,52 @@ const CarDetail = () => {
       {toast && <Toast message={toast} type="success" onClose={() => setToast('')} />}
       
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card rounded-3xl overflow-hidden border border-amber-500/30 p-6 md:p-10 flex flex-col md:flex-row gap-10"
+        variants={detailVariants}
+        initial="hidden"
+        animate="visible"
+        className="detail-shell glass-card rounded-3xl overflow-hidden border border-amber-500/30 p-6 md:p-10 flex flex-col md:flex-row gap-10"
       >
-        <div className="md:w-5/12 space-y-4">
+        <motion.div initial={{ opacity: 0, x: -35 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="md:w-5/12 space-y-4">
           {car.images?.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
               {car.images.map((img, idx) => (
-                <img
+                <motion.img
                   key={idx}
                   src={img}
                   alt={`${car.name} ${idx + 1}`}
-                  className="rounded-2xl w-full h-44 object-cover shadow-2xl border border-amber-400/30"
+                  initial={{ opacity: 0, scale: 0.88, rotate: idx % 2 ? 1.5 : -1.5 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.25 + idx * 0.1, duration: 0.65 }}
+                  whileHover={{ scale: 1.04, zIndex: 2 }}
+                  className="detail-image rounded-2xl w-full h-44 object-cover shadow-2xl border border-amber-400/30"
                 />
               ))}
             </div>
           ) : (
-            <img
+            <motion.img
               src={car.image}
               alt={car.name}
-              className="rounded-2xl w-full max-h-[380px] object-cover shadow-2xl border border-amber-400/30"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              whileHover={{ scale: 1.03 }}
+              className="detail-image rounded-2xl w-full max-h-[380px] object-cover shadow-2xl border border-amber-400/30"
             />
           )}
-        </div>
+        </motion.div>
         
-        <div className="md:w-7/12 space-y-4">
-          <h1 className="font-display text-4xl md:text-5xl text-amber-500">{car.name}</h1>
+        <motion.div initial={{ opacity: 0, x: 35 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15, duration: 0.75 }} className="md:w-7/12 space-y-4">
+          <motion.div initial={{ width: 0 }} animate={{ width: '4rem' }} transition={{ delay: 0.45, duration: 0.5 }} className="h-1 bg-amber-500 rounded-full" />
+          <h1 className="font-display text-4xl md:text-5xl text-amber-500 detail-title">{car.name}</h1>
           
           <div className="grid grid-cols-2 gap-3 text-gray-200 border-l-4 border-amber-500 pl-4">
-            <p><span className="font-bold text-amber-400">Brand:</span> {car.brand}</p>
-            <p><span className="font-bold text-amber-400">Model:</span> {car.model}</p>
-            <p><span className="font-bold text-amber-400">Engine:</span> {car.engine}</p>
-            <p><span className="font-bold text-amber-400">Horsepower:</span> {car.horsepower}</p>
-            <p><span className="font-bold text-amber-400">Year:</span> {car.year}</p>
-            <p><span className="font-bold text-amber-400">Top Speed:</span> {car.topSpeed}</p>
-            <p><span className="font-bold text-amber-400">Est. Value:</span> {car.price || "Collector's item"}</p>
-            <p><span className="font-bold text-amber-400">Location:</span> {car.address || "Various Locations"}</p>
+            {[['Brand', car.brand], ['Model', car.model], ['Engine', car.engine], ['Horsepower', car.horsepower], ['Year', car.year], ['Top Speed', car.topSpeed], ['Est. Value', car.price || "Collector's item"], ['Location', car.address || "Various Locations"]].map(([label, value], index) => (
+              <motion.p key={label} custom={index} variants={specVariants} initial="hidden" animate="visible" className="spec-row"><span className="font-bold text-amber-400">{label}:</span> {value}</motion.p>
+            ))}
           </div>
           
           <p className="text-gray-300 leading-relaxed mt-4">{details}</p>
-        </div>
+        </motion.div>
       </motion.div>
       <Modal
         open={showDeleteModal}
