@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import CarCard from '../components/CarCard';
 import SearchBar from '../components/SearchBar';
@@ -18,8 +18,7 @@ const HomePage = () => {
     maxPrice: '',
     location: '',
   });
-  const [soundOn, setSoundOn] = useState(false);
-  const audioRef = useRef(null);
+  
 
   const handleCarClick = (carId) => {
     navigate(`/car/${carId}`);
@@ -38,129 +37,11 @@ const HomePage = () => {
     setFilters({ year: '', horsepower: '', minPrice: '', maxPrice: '', location: '' });
   };
 
-  useEffect(() => () => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.stop();
-      audioRef.current = null;
-    }
-  }, []);
+  
 
-  const toggleEngineSound = () => {
-    if (soundOn) {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.stop();
-        audioRef.current = null;
-      }
-      setSoundOn(false);
-      return;
-    }
+  
 
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    const context = new AudioContext();
-    const master = context.createGain();
-    const filter = context.createBiquadFilter();
-    const nodes = [];
-    filter.type = 'lowpass';
-    filter.frequency.value = 1250;
-    filter.Q.value = 1.4;
-    master.gain.setValueAtTime(0.0001, context.currentTime);
-    master.gain.exponentialRampToValueAtTime(0.065, context.currentTime + 0.35);
-    filter.connect(master).connect(context.destination);
-
-    // Layered, procedural V8 rumble: a low crankshaft fundamental, harmonics,
-    // and a modulated pulse layer approximating a classic big-block idle.
-    const rumble = context.createOscillator();
-    const harmonic = context.createOscillator();
-    const pulse = context.createOscillator();
-    const rumbleGain = context.createGain();
-    const harmonicGain = context.createGain();
-    const pulseGain = context.createGain();
-    rumble.type = 'sawtooth';
-    rumble.frequency.value = 43;
-    harmonic.type = 'triangle';
-    harmonic.frequency.value = 86;
-    pulse.type = 'square';
-    pulse.frequency.value = 21.5;
-    rumbleGain.gain.value = 0.55;
-    harmonicGain.gain.value = 0.12;
-    pulseGain.gain.value = 0.07;
-    rumble.connect(rumbleGain).connect(filter);
-    harmonic.connect(harmonicGain).connect(filter);
-    pulse.connect(pulseGain).connect(filter);
-
-    const rev = context.createOscillator();
-    const revGain = context.createGain();
-    rev.type = 'sine';
-    rev.frequency.value = 4.2;
-    revGain.gain.value = 7;
-    rev.connect(revGain).connect(rumble.frequency);
-
-    const exhaustBuffer = context.createBuffer(1, context.sampleRate * 1.5, context.sampleRate);
-    const exhaustData = exhaustBuffer.getChannelData(0);
-    for (let index = 0; index < exhaustData.length; index += 1) {
-      exhaustData[index] = (Math.random() * 2 - 1) * Math.pow(1 - (index % 3300) / 3300, 2);
-    }
-    const exhaust = context.createBufferSource();
-    const exhaustFilter = context.createBiquadFilter();
-    const exhaustGain = context.createGain();
-    exhaust.buffer = exhaustBuffer;
-    exhaust.loop = true;
-    exhaustFilter.type = 'bandpass';
-    exhaustFilter.frequency.value = 180;
-    exhaustFilter.Q.value = 0.7;
-    exhaustGain.gain.value = 0.09;
-    exhaust.connect(exhaustFilter).connect(exhaustGain).connect(filter);
-
-    [rumble, harmonic, pulse, rev, exhaust].forEach((node) => {
-      node.start();
-      nodes.push(node);
-    });
-    audioRef.current = {
-      context,
-      stop: () => {
-        nodes.forEach((node) => {
-          try { node.stop(); } catch { /* already stopped */ }
-        });
-        context.close();
-      },
-    };
-    setSoundOn(true);
-  };
-
-  useEffect(() => {
-    // Browsers may suspend audio until the visitor interacts with the page.
-    // Start immediately where autoplay is allowed, then unlock on the first
-    // pointer/keyboard gesture everywhere else.
-    toggleEngineSound();
-    const unlockAudio = () => {
-      audioRef.current?.context.resume();
-      window.removeEventListener('pointerdown', unlockAudio);
-      window.removeEventListener('keydown', unlockAudio);
-    };
-    window.addEventListener('pointerdown', unlockAudio, { once: true });
-    window.addEventListener('keydown', unlockAudio, { once: true });
-    const soundTimer = window.setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.stop();
-        audioRef.current = null;
-        setSoundOn(false);
-      }
-    }, 8200);
-    return () => {
-      window.clearTimeout(soundTimer);
-      window.removeEventListener('pointerdown', unlockAudio);
-      window.removeEventListener('keydown', unlockAudio);
-      if (audioRef.current) {
-        audioRef.current.stop();
-        audioRef.current = null;
-      }
-    };
-    // The sound should be initialized once when this page enters.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  
 
   const filteredCars = useMemo(() => {
     return cars.filter((car) => {
