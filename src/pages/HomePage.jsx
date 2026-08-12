@@ -110,6 +110,8 @@ const HomePage = () => {
         <div className="mt-8">
           <Car3DViewer
             modelUrl={cars[0]?.model3d || localStorage.getItem(`car_model_${cars[0]?.id}`) || ''}
+            posterUrl={localStorage.getItem(`car_poster_${cars[0]?.id}`) || cars[0]?.image}
+            exposure={Number(localStorage.getItem(`car_exposure_${cars[0]?.id}`) || 1)}
             imageUrl={cars[0]?.image}
             className="mx-auto rounded-3xl overflow-hidden w-full max-w-4xl"
           />

@@ -22,6 +22,10 @@ const CarDetail = () => {
   const [toast, setToast] = useState('');
   const [savedModel, setSavedModel] = useState('');
   const [modelInput, setModelInput] = useState('');
+  const [posterInput, setPosterInput] = useState('');
+  const [savedPoster, setSavedPoster] = useState('');
+  const [exposureInput, setExposureInput] = useState(1);
+  const [savedExposure, setSavedExposure] = useState(1);
 
   useEffect(() => {
     if (!car) return;
@@ -29,6 +33,14 @@ const CarDetail = () => {
     const existing = localStorage.getItem(key) || '';
     setSavedModel(existing);
     setModelInput(existing || car.model3d || '');
+    const posterKey = `car_poster_${car.id}`;
+    const existingPoster = localStorage.getItem(posterKey) || '';
+    setSavedPoster(existingPoster);
+    setPosterInput(existingPoster || car.image || '');
+    const expKey = `car_exposure_${car.id}`;
+    const existingExp = Number(localStorage.getItem(expKey) || car.exposure || 1);
+    setSavedExposure(existingExp);
+    setExposureInput(existingExp);
   }, [car]);
 
   const saveModelUrl = () => {
@@ -45,6 +57,28 @@ const CarDetail = () => {
       setToast('Model URL removed');
       setTimeout(() => setToast(''), 2500);
     }
+  };
+
+  const savePosterAndExposure = () => {
+    if (!car) return;
+    const posterKey = `car_poster_${car.id}`;
+    const expKey = `car_exposure_${car.id}`;
+    if (posterInput) {
+      localStorage.setItem(posterKey, posterInput);
+      setSavedPoster(posterInput);
+    } else {
+      localStorage.removeItem(posterKey);
+      setSavedPoster('');
+    }
+    if (exposureInput) {
+      localStorage.setItem(expKey, String(exposureInput));
+      setSavedExposure(Number(exposureInput));
+    } else {
+      localStorage.removeItem(expKey);
+      setSavedExposure(1);
+    }
+    setToast('Poster and exposure saved');
+    setTimeout(() => setToast(''), 2000);
   };
 
   const detailVariants = {
@@ -128,13 +162,23 @@ const CarDetail = () => {
           <div className="rounded-2xl overflow-hidden shadow-2xl border border-amber-400/30">
             <Car3DViewer modelUrl={savedModel || car.model3d || car.modelUrl || car.model} imageUrl={car.image} />
           </div>
-          <div className="mt-4 px-2">
-            <label className="block text-sm text-gray-300 mb-2">GLB/GLTF model URL (optional)</label>
+          <div className="mt-4 px-2 space-y-3">
+            <label className="block text-sm text-gray-300">GLB/GLTF model URL (optional)</label>
             <div className="flex gap-2">
               <input value={modelInput} onChange={(e) => setModelInput(e.target.value)} placeholder="https://example.com/model.glb" className="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-gray-700 text-white" />
               <button onClick={saveModelUrl} className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg">Save</button>
             </div>
-            <p className="text-xs text-gray-500 mt-2">Saved locally in your browser. Use a public URL or place files under <code>public/models/</code> and reference via <code>/models/your.glb</code>.</p>
+
+            <label className="block text-sm text-gray-300">Poster image URL (optional)</label>
+            <div className="flex gap-2">
+              <input value={posterInput} onChange={(e) => setPosterInput(e.target.value)} placeholder="https://example.com/poster.jpg" className="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-gray-700 text-white" />
+              <button onClick={savePosterAndExposure} className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg">Save Poster & Exposure</button>
+            </div>
+
+            <label className="block text-sm text-gray-300">Exposure: <span className="text-gray-400">{exposureInput}</span></label>
+            <input type="range" min="0.1" max="3" step="0.1" value={exposureInput} onChange={(e) => setExposureInput(Number(e.target.value))} className="w-full" />
+
+            <p className="text-xs text-gray-500 mt-2">Poster and exposure are saved locally. Poster overrides the default image when set.</p>
           </div>
         </motion.div>
         

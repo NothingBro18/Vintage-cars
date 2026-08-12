@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const Car3DViewer = ({ modelUrl, imageUrl, className }) => {
+const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, shadowIntensity = 1, environmentImage }) => {
   const wrapperRef = useRef(null);
   const viewerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -21,10 +21,13 @@ const Car3DViewer = ({ modelUrl, imageUrl, className }) => {
   useEffect(() => {
     const mv = viewerRef.current;
     if (!mv) return;
-    // Keep attribute in sync
+    // Keep attributes in sync
     if (autoRotate) mv.setAttribute('auto-rotate', '');
     else mv.removeAttribute('auto-rotate');
-  }, [autoRotate]);
+    try { mv.setAttribute('exposure', String(exposure)); } catch {}
+    try { mv.setAttribute('shadow-intensity', String(shadowIntensity)); } catch {}
+    if (environmentImage) mv.setAttribute('environment-image', environmentImage);
+  }, [autoRotate, exposure, shadowIntensity, environmentImage]);
 
   const toggleRotate = () => setAutoRotate((v) => !v);
 
@@ -42,9 +45,8 @@ const Car3DViewer = ({ modelUrl, imageUrl, className }) => {
         <model-viewer
           ref={viewerRef}
           src={modelUrl}
-          poster={imageUrl}
+          poster={posterUrl || imageUrl}
           alt="3D car model"
-          exposure="1"
           camera-controls
           ar
           loading="lazy"
