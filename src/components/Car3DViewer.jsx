@@ -8,16 +8,21 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
   const [autoRotateSpeed, setAutoRotateSpeed] = useState(60);
 
   useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return undefined;
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) setIsVisible(true);
-      });
-    }, { threshold: 0.25 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+    // Immediately mark visible when a model URL is available so the viewer mounts
+    if (modelUrl) setIsVisible(true);
+    else {
+      const el = wrapperRef.current;
+      if (!el) return undefined;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setIsVisible(true);
+        });
+      }, { threshold: 0.25 });
+      obs.observe(el);
+      return () => obs.disconnect();
+    }
+    return undefined;
+  }, [modelUrl]);
 
   useEffect(() => {
     const mv = viewerRef.current;
