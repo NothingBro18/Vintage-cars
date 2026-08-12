@@ -35,7 +35,7 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
     try { mv.setAttribute('auto-rotate-speed', String(autoRotateSpeed)); } catch {}
     if (environmentImage) mv.setAttribute('environment-image', environmentImage);
     try { mv.setAttribute('camera-orbit', cameraOrbit); } catch {}
-  }, [autoRotate, exposure, shadowIntensity, environmentImage]);
+  }, [autoRotate, exposure, shadowIntensity, environmentImage, autoRotateSpeed, cameraOrbit]);
 
   const toggleRotate = () => setAutoRotate((v) => !v);
 
