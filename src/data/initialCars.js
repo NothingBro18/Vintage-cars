@@ -12,6 +12,7 @@ export const initialCars = [
     topSpeed: "130 mph",
     details: "Iconic American muscle car known as 'Eleanor'. Raw power and aggressive styling.",
     image: assetUrl('01-mustang-mach1.jpg'),
+    model3d: assetUrl('models/01-mustang.glb'),
     price: "₹2,05,00,000+",
     address: "Los Angeles, USA"
   },
@@ -26,6 +27,7 @@ export const initialCars = [
     topSpeed: "125 mph",
     details: "Classic American muscle with aggressive design and performance.",
     image: assetUrl('02-chevelle-ss.jpg'),
+    model3d: assetUrl('models/02-camaro.glb'),
     price: "₹1,47,60,000",
     address: "Detroit, USA"
   },
@@ -40,6 +42,7 @@ export const initialCars = [
     topSpeed: "140 mph",
     details: "Famous for bold styling and powerful road presence.",
     image: assetUrl('03-dodge-charger.jpg'),
+    model3d: assetUrl('models/03-charger.glb'),
     price: "₹1,80,40,000",
     address: "USA"
   },
@@ -54,6 +57,7 @@ export const initialCars = [
     topSpeed: "120 mph",
     details: "Luxury and performance combined in a classic design.",
     image: assetUrl('04-chevy-impala.jpg'),
+    model3d: assetUrl('models/04-impala.glb'),
     price: "₹73,80,000",
     address: "USA"
   },
@@ -68,6 +72,7 @@ export const initialCars = [
     topSpeed: "135 mph",
     details: "Raw muscle with minimal luxury but maximum power.",
     image: assetUrl('05-plymouth-roadrunner.jpg'),
+    model3d: assetUrl('models/05-roadrunner.glb'),
     price: "₹1,23,00,000",
     address: "USA"
   },
@@ -82,6 +87,7 @@ export const initialCars = [
     topSpeed: "125 mph",
     details: "Built for racing dominance with iconic Mustang design.",
     image: assetUrl('06-mustang-boss302.jpg'),
+    model3d: assetUrl('models/06-boss302.glb'),
     price: "₹1,64,00,000",
     address: "USA"
   }

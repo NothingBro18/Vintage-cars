@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import CarCard from '../components/CarCard';
+import Car3DViewer from '../components/Car3DViewer';
 import SearchBar from '../components/SearchBar';
 import SearchFilters from '../components/SearchFilters';
 import { useNavigate } from 'react-router-dom';
@@ -105,6 +106,14 @@ const HomePage = () => {
         <motion.div variants={heroItem} className="hero-scroll-cue" aria-hidden="true">
           <span /> SCROLL TO EXPLORE
         </motion.div>
+        {/* 3D hero: show first car model if available, otherwise image */}
+        <div className="mt-8">
+          <Car3DViewer
+            modelUrl={cars[0]?.model3d || localStorage.getItem(`car_model_${cars[0]?.id}`) || ''}
+            imageUrl={cars[0]?.image}
+            className="mx-auto rounded-3xl overflow-hidden w-full max-w-4xl"
+          />
+        </div>
       </motion.div>
       <div className="road-scene" aria-hidden="true">
         <div className="road-horizon" />
