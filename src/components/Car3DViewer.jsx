@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, shadowIntensity = 1, environmentImage }) => {
+const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, shadowIntensity = 1, environmentImage, cameraOrbit = '0deg 75deg 4m' }) => {
   const wrapperRef = useRef(null);
   const viewerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
+  const [autoRotateSpeed, setAutoRotateSpeed] = useState(60);
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -26,7 +27,9 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
     else mv.removeAttribute('auto-rotate');
     try { mv.setAttribute('exposure', String(exposure)); } catch {}
     try { mv.setAttribute('shadow-intensity', String(shadowIntensity)); } catch {}
+    try { mv.setAttribute('auto-rotate-speed', String(autoRotateSpeed)); } catch {}
     if (environmentImage) mv.setAttribute('environment-image', environmentImage);
+    try { mv.setAttribute('camera-orbit', cameraOrbit); } catch {}
   }, [autoRotate, exposure, shadowIntensity, environmentImage]);
 
   const toggleRotate = () => setAutoRotate((v) => !v);
@@ -60,9 +63,13 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
       )}
 
       {/* Controls overlay */}
-      <div style={{ position: 'absolute', right: 10, bottom: 10, display: 'flex', gap: 8, zIndex: 30 }}>
+      <div style={{ position: 'absolute', right: 10, bottom: 10, display: 'flex', gap: 8, zIndex: 30, alignItems: 'center' }}>
         <button aria-pressed={autoRotate} onClick={toggleRotate} className="bg-amber-500 text-slate-900 px-3 py-1 rounded-md shadow">{autoRotate ? 'Stop' : 'Rotate'}</button>
         <button onClick={resetCamera} className="bg-slate-800 text-white px-3 py-1 rounded-md shadow">Reset</button>
+        <div className="px-2 py-1 bg-slate-900 rounded-md text-white" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <label className="text-xs">Speed</label>
+          <input type="range" min="5" max="180" value={autoRotateSpeed} onChange={(e) => setAutoRotateSpeed(Number(e.target.value))} />
+        </div>
       </div>
     </div>
   );
