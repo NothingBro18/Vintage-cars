@@ -26,6 +26,8 @@ const CarDetail = () => {
   const [savedPoster, setSavedPoster] = useState('');
   const [exposureInput, setExposureInput] = useState(1);
   const [savedExposure, setSavedExposure] = useState(1);
+  const [poseInput, setPoseInput] = useState('');
+  const [savedPose, setSavedPose] = useState('');
 
   useEffect(() => {
     if (!car) return;
@@ -41,6 +43,10 @@ const CarDetail = () => {
     const existingExp = Number(localStorage.getItem(expKey) || car.exposure || 1);
     setSavedExposure(existingExp);
     setExposureInput(existingExp);
+    const poseKey = `car_pose_${car.id}`;
+    const existingPose = localStorage.getItem(poseKey) || car.cameraOrbit || '';
+    setSavedPose(existingPose);
+    setPoseInput(existingPose || '');
   }, [car]);
 
   const saveModelUrl = () => {
@@ -78,6 +84,21 @@ const CarDetail = () => {
       setSavedExposure(1);
     }
     setToast('Poster and exposure saved');
+    setTimeout(() => setToast(''), 2000);
+  };
+
+  const savePose = () => {
+    if (!car) return;
+    const poseKey = `car_pose_${car.id}`;
+    if (poseInput) {
+      localStorage.setItem(poseKey, poseInput);
+      setSavedPose(poseInput);
+      setToast('Pose saved locally');
+    } else {
+      localStorage.removeItem(poseKey);
+      setSavedPose('');
+      setToast('Pose removed');
+    }
     setTimeout(() => setToast(''), 2000);
   };
 
@@ -159,8 +180,8 @@ const CarDetail = () => {
       >
         <motion.div initial={{ opacity: 0, x: -35 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="md:w-5/12 space-y-4">
           {/* 3D viewer: uses a GLTF model URL if provided on the car object (e.g., `model3d`), otherwise falls back to the image texture */}
-          <div className="rounded-2xl overflow-hidden shadow-2xl border border-amber-400/30">
-            <Car3DViewer modelUrl={savedModel || car.model3d || car.modelUrl || car.model} imageUrl={car.image} />
+            <div className="rounded-2xl overflow-hidden shadow-2xl border border-amber-400/30">
+            <Car3DViewer modelUrl={savedModel || car.model3d || car.modelUrl || car.model} posterUrl={savedPoster || car.image} imageUrl={car.image} exposure={savedExposure || 1} cameraOrbit={savedPose || undefined} />
           </div>
           <div className="mt-4 px-2 space-y-3">
             <label className="block text-sm text-gray-300">GLB/GLTF model URL (optional)</label>
@@ -179,6 +200,18 @@ const CarDetail = () => {
             <input type="range" min="0.1" max="3" step="0.1" value={exposureInput} onChange={(e) => setExposureInput(Number(e.target.value))} className="w-full" />
 
             <p className="text-xs text-gray-500 mt-2">Poster and exposure are saved locally. Poster overrides the default image when set.</p>
+            <div className="mt-3">
+              <label className="block text-sm text-gray-300">Default camera pose (optional)</label>
+              <div className="flex gap-2 mt-2">
+                <select value={poseInput} onChange={(e) => setPoseInput(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-gray-700 text-white">
+                  <option value="">(use model default)</option>
+                  <option value="0deg 10deg 4m">Front</option>
+                  <option value="45deg 30deg 4m">3/4</option>
+                  <option value="0deg 85deg 2.5m">Top</option>
+                </select>
+                <button onClick={savePose} className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg">Save Pose</button>
+              </div>
+            </div>
           </div>
         </motion.div>
         

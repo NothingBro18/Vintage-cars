@@ -113,6 +113,7 @@ const HomePage = () => {
             posterUrl={localStorage.getItem(`car_poster_${cars[0]?.id}`) || cars[0]?.image}
             exposure={Number(localStorage.getItem(`car_exposure_${cars[0]?.id}`) || 1)}
             imageUrl={cars[0]?.image}
+            cameraOrbit={localStorage.getItem(`car_pose_${cars[0]?.id}`) || '0deg 60deg 4m'}
             className="mx-auto rounded-3xl overflow-hidden w-full max-w-4xl"
           />
         </div>

@@ -6,6 +6,7 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
   const [isVisible, setIsVisible] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
   const [autoRotateSpeed, setAutoRotateSpeed] = useState(60);
+  const [currentOrbit, setCurrentOrbit] = useState(cameraOrbit);
 
   useEffect(() => {
     // Immediately mark visible when a model URL is available so the viewer mounts
@@ -34,7 +35,7 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
     try { mv.setAttribute('shadow-intensity', String(shadowIntensity)); } catch {}
     try { mv.setAttribute('auto-rotate-speed', String(autoRotateSpeed)); } catch {}
     if (environmentImage) mv.setAttribute('environment-image', environmentImage);
-    try { mv.setAttribute('camera-orbit', cameraOrbit); } catch {}
+    try { mv.setAttribute('camera-orbit', currentOrbit || cameraOrbit); } catch {}
   }, [autoRotate, exposure, shadowIntensity, environmentImage, autoRotateSpeed, cameraOrbit]);
 
   const toggleRotate = () => setAutoRotate((v) => !v);
@@ -43,6 +44,14 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
     const mv = viewerRef.current;
     if (mv && typeof mv.resetCamera === 'function') {
       try { mv.resetCamera(); } catch (e) { /* ignore */ }
+    }
+  };
+
+  const applyPreset = (presetOrbit) => {
+    setCurrentOrbit(presetOrbit);
+    const mv = viewerRef.current;
+    if (mv) {
+      try { mv.setAttribute('camera-orbit', presetOrbit); } catch {}
     }
   };
 
@@ -75,6 +84,13 @@ const Car3DViewer = ({ modelUrl, imageUrl, className, posterUrl, exposure = 1, s
           <label className="text-xs">Speed</label>
           <input type="range" min="5" max="180" value={autoRotateSpeed} onChange={(e) => setAutoRotateSpeed(Number(e.target.value))} />
         </div>
+      </div>
+
+      {/* Preset buttons */}
+      <div style={{ position: 'absolute', left: 10, bottom: 10, display: 'flex', gap: 8, zIndex: 30 }}>
+        <button onClick={() => applyPreset('0deg 10deg 4m')} className="bg-slate-800 text-white px-3 py-1 rounded-md">Front</button>
+        <button onClick={() => applyPreset('45deg 30deg 4m')} className="bg-slate-800 text-white px-3 py-1 rounded-md">3/4</button>
+        <button onClick={() => applyPreset('0deg 85deg 2.5m')} className="bg-slate-800 text-white px-3 py-1 rounded-md">Top</button>
       </div>
     </div>
   );
