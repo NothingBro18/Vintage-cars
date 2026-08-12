@@ -6,6 +6,7 @@ import { generateDetails } from '../utils/carHelpers';
 import Modal from './Modal';
 import Toast from './Toast';
 import FavoriteButton from './FavoriteButton';
+import Car3DViewer from './Car3DViewer';
 
 const CarDetail = () => {
   const { id } = useParams();
@@ -97,32 +98,10 @@ const CarDetail = () => {
         className="detail-shell glass-card rounded-3xl overflow-hidden border border-amber-500/30 p-6 md:p-10 flex flex-col md:flex-row gap-10"
       >
         <motion.div initial={{ opacity: 0, x: -35 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="md:w-5/12 space-y-4">
-          {car.images?.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              {car.images.map((img, idx) => (
-                <motion.img
-                  key={idx}
-                  src={img}
-                  alt={`${car.name} ${idx + 1}`}
-                  initial={{ opacity: 0, scale: 0.88, rotate: idx % 2 ? 1.5 : -1.5 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.25 + idx * 0.1, duration: 0.65 }}
-                  whileHover={{ scale: 1.04, zIndex: 2 }}
-                  className="detail-image rounded-2xl w-full h-44 object-cover shadow-2xl border border-amber-400/30"
-                />
-              ))}
-            </div>
-          ) : (
-            <motion.img
-              src={car.image}
-              alt={car.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              whileHover={{ scale: 1.03 }}
-              className="detail-image rounded-2xl w-full max-h-[380px] object-cover shadow-2xl border border-amber-400/30"
-            />
-          )}
+          {/* 3D viewer: uses a GLTF model URL if provided on the car object (e.g., `model3d`), otherwise falls back to the image texture */}
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-amber-400/30">
+            <Car3DViewer modelUrl={car.model3d || car.modelUrl || car.model} imageUrl={car.image} />
+          </div>
         </motion.div>
         
         <motion.div initial={{ opacity: 0, x: 35 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15, duration: 0.75 }} className="md:w-7/12 space-y-4">

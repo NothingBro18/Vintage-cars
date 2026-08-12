@@ -13,4 +13,17 @@ export default defineConfig({
       '/api': 'http://localhost:4000',
     },
   },
+  optimizeDeps: {
+    include: [
+      'three',
+      'three/examples/jsm/controls/OrbitControls',
+      'three/examples/jsm/loaders/GLTFLoader',
+      'three/examples/jsm/libs/stats.module'
+    ]
+  },
+  resolve: {
+    alias: {
+      'three/examples/js/libs/stats.min': 'three/examples/jsm/libs/stats.module'
+    }
+  }
 })
